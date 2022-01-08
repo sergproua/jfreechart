@@ -92,9 +92,9 @@ public class OHLCSeriesTest implements SeriesChangeListener {
         assertEquals(s2, s1);
 
         // remove a value
-        s1.remove(new Year(2008));
+        s1.delete(new Year(2008));
         assertNotEquals(s1, s2);
-        s2.remove(new Year(2008));
+        s2.delete(new Year(2008));
         assertEquals(s2, s1);
     }
 
@@ -146,9 +146,9 @@ public class OHLCSeriesTest implements SeriesChangeListener {
         s1.add(new Year(2006), 2.0, 4.0, 1.0, 3.0);
         s1.add(new Year(2011), 2.0, 4.0, 1.0, 3.0);
         s1.add(new Year(2010), 2.0, 4.0, 1.0, 3.0);
-        assertEquals(0, s1.indexOf(new Year(2006)));
-        assertEquals(1, s1.indexOf(new Year(2010)));
-        assertEquals(2, s1.indexOf(new Year(2011)));
+        assertEquals(0, s1.getIndex(new Year(2006)));
+        assertEquals(1, s1.getIndex(new Year(2010)));
+        assertEquals(2, s1.getIndex(new Year(2011)));
     }
 
     /**
@@ -162,10 +162,10 @@ public class OHLCSeriesTest implements SeriesChangeListener {
         s1.add(new Year(2010), 2.2, 4.2, 1.2, 3.2);
         assertEquals(3, s1.getItemCount());
 
-        s1.remove(new Year(2010));
+        s1.delete(new Year(2010));
         assertEquals(new Year(2011), s1.getPeriod(1));
 
-        s1.remove(new Year(2006));
+        s1.delete(new Year(2006));
         assertEquals(new Year(2011), s1.getPeriod(0));
     }
 
@@ -180,7 +180,7 @@ public class OHLCSeriesTest implements SeriesChangeListener {
         s1.add(new Year(2010), 2.2, 4.2, 1.2, 3.2);
         assertEquals(3, s1.getItemCount());
 
-        s1.remove(s1.getItemCount() - 1);
+        s1.delete(s1.getItemCount() - 1, s1.getItemCount() - 1);
         assertEquals(2, s1.getItemCount());
         assertEquals(new Year(2010), s1.getPeriod(1));
     }

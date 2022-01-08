@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------
@@ -38,25 +38,41 @@ package org.jfree.data.time.ohlc;
 
 import org.jfree.data.ComparableObjectItem;
 import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.data.time.TimeSeriesDataItem;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
- * An item representing data in the form {@code (time-period, open, high, low, 
+ * An item representing data in the form {@code (time-period, open, high, low,
  * close)}.
  */
-public class OHLCItem extends ComparableObjectItem {
+public class OHLCItem implements Cloneable,
+        Comparable<OHLCItem>, Serializable {
+
+    /**
+     * The time period.
+     */
+    private RegularTimePeriod period;
+
+    /**
+     * The value associated with the time period.
+     */
+    private OHLC value;
 
     /**
      * Creates a new instance of {@code OHLCItem}.
      *
-     * @param period  the time period.
-     * @param open  the open-value.
-     * @param high  the high-value.
-     * @param low  the low-value.
+     * @param period the time period.
+     * @param open   the open-value.
+     * @param high   the high-value.
+     * @param low    the low-value.
      * @param close  the close-value.
      */
     public OHLCItem(RegularTimePeriod period, double open, double high,
-            double low, double close) {
-        super(period, new OHLC(open, high, low, close));
+                    double low, double close) {
+        this.period = period;
+        this.value = new OHLC(open, high, low, close);
     }
 
     /**
@@ -65,7 +81,7 @@ public class OHLCItem extends ComparableObjectItem {
      * @return The period (never {@code null}).
      */
     public RegularTimePeriod getPeriod() {
-        return (RegularTimePeriod) getComparable();
+        return this.period;
     }
 
     /**
@@ -83,13 +99,7 @@ public class OHLCItem extends ComparableObjectItem {
      * @return The open value.
      */
     public double getOpenValue() {
-        OHLC ohlc = (OHLC) getObject();
-        if (ohlc != null) {
-            return ohlc.getOpen();
-        }
-        else {
-            return Double.NaN;
-        }
+        return value.getOpen();
     }
 
     /**
@@ -98,13 +108,7 @@ public class OHLCItem extends ComparableObjectItem {
      * @return The high value.
      */
     public double getHighValue() {
-        OHLC ohlc = (OHLC) getObject();
-        if (ohlc != null) {
-            return ohlc.getHigh();
-        }
-        else {
-            return Double.NaN;
-        }
+        return value.getHigh();
     }
 
     /**
@@ -113,13 +117,7 @@ public class OHLCItem extends ComparableObjectItem {
      * @return The low value.
      */
     public double getLowValue() {
-        OHLC ohlc = (OHLC) getObject();
-        if (ohlc != null) {
-            return ohlc.getLow();
-        }
-        else {
-            return Double.NaN;
-        }
+        return value.getLow();
     }
 
     /**
@@ -128,13 +126,62 @@ public class OHLCItem extends ComparableObjectItem {
      * @return The close value.
      */
     public double getCloseValue() {
-        OHLC ohlc = (OHLC) getObject();
-        if (ohlc != null) {
-            return ohlc.getClose();
+        return value.getClose();
+    }
+
+    /**
+     * Sets the value for this data item.
+     *
+     * @param open   the open-value.
+     * @param high   the high-value.
+     * @param low    the low-value.
+     * @param close  the close-value.
+     */
+    public void setValue(double open, double high, double low, double close) {
+        this.value = new OHLC(open, high, low, close);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        else {
-            return Double.NaN;
+        if (!(obj instanceof OHLCItem)) {
+            return false;
         }
+        OHLCItem that = (OHLCItem) obj;
+        if (!Objects.equals(this.period, that.period)) {
+            return false;
+        }
+        if (!Objects.equals(this.value, that.value)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        result = (this.period != null ? this.period.hashCode() : 0);
+        result = 29 * result + (this.value != null ? this.value.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public int compareTo(OHLCItem other) {
+        return getPeriod().compareTo(other.getPeriod());
+    }
+
+    @Override
+    public Object clone() {
+        Object clone = null;
+        try {
+            clone = super.clone();
+        }
+        catch (CloneNotSupportedException e) { // won't get here...
+            e.printStackTrace();
+        }
+        return clone;
     }
 
 }
